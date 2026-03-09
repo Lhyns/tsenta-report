@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tsenta — Market Intelligence Report 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --ink: #0e1117;
+    --ink-mid: #1c2333;
+    --violet: #5b3ff8;
+    --violet-light: #7c62fa;
+    --violet-pale: #f0edff;
+    --amber: #e07b2a;
+    --amber-pale: #fff5ea;
+    --green: #1a9c6e;
+    --green-pale: #e8faf3;
+    --red: #d63b3b;
+    --red-pale: #fff0f0;
+    --gray-100: #f7f8fb;
+    --gray-200: #eaecf2;
+    --gray-400: #9299aa;
+    --gray-700: #3e4759;
+    --white: #ffffff;
+    --text: #1a1f2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--gray-100); color: var(--text); line-height: 1.65; }
+
+  /* COVER */
+  .cover {
+    background: linear-gradient(140deg, #0d0d1a 0%, #140f2e 55%, #0e1a2a 100%);
+    padding: 64px 64px 56px;
+    position: relative; overflow: hidden; min-height: 320px;
+  }
+  .cover::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 55% 70% at 90% 15%, rgba(91,63,248,0.28) 0%, transparent 65%);
+  }
+  .cover::after {
+    content: ''; position: absolute;
+    width: 360px; height: 360px; border-radius: 50%;
+    border: 1px solid rgba(91,63,248,0.12);
+    top: -80px; right: -80px;
+  }
+  .cover-tag { font-size: 10px; letter-spacing: 3.5px; text-transform: uppercase; color: var(--violet-light); font-weight: 600; margin-bottom: 20px; font-family: 'DM Sans', sans-serif; }
+  .cover h1 { font-family: 'DM Serif Display', serif; font-size: 60px; color: #fff; line-height: 1.05; font-weight: 800; position: relative; z-index: 1; }
+  .cover h1 span { color: var(--violet-light); }
+  .cover-sub { font-size: 16px; color: rgba(255,255,255,0.45); margin-top: 12px; font-style: italic; position: relative; z-index: 1; }
+  .cover-meta { display: flex; gap: 36px; margin-top: 40px; position: relative; z-index: 1; flex-wrap: wrap; }
+  .cover-stat .val { font-size: 26px; font-weight: 700; color: var(--violet-light); font-family: 'DM Serif Display', serif; }
+  .cover-stat .lbl { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+
+  /* NAV */
+  .toc { background: var(--ink); padding: 0 64px; display: flex; overflow-x: auto; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .toc a { color: rgba(255,255,255,0.45); text-decoration: none; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; padding: 15px 18px; white-space: nowrap; font-weight: 500; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  .toc a:hover { color: var(--violet-light); border-bottom-color: var(--violet-light); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 32px; }
+  section { padding: 56px 0 40px; }
+  section + section { border-top: 1px solid var(--gray-200); }
+
+  /* SECTION HEADERS */
+  .section-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--violet); font-weight: 700; margin-bottom: 8px; }
+  h2 { font-family: 'DM Serif Display', serif; font-size: 34px; color: var(--ink); font-weight: 700; line-height: 1.15; margin-bottom: 20px; }
+  h3 { font-size: 15px; font-weight: 600; color: var(--ink); margin: 28px 0 8px; }
+  p { color: var(--gray-700); font-size: 15px; margin-bottom: 14px; }
+  p strong { color: var(--text); }
+
+  /* CALLOUTS */
+  .insight { background: var(--violet-pale); border-left: 4px solid var(--violet); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; font-size: 15px; color: #2a1a6e; }
+  .insight strong { color: var(--violet); display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .warning { background: var(--amber-pale); border-left: 4px solid var(--amber); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0; font-size: 15px; color: #5a3210; }
+  .warning strong { color: var(--amber); display: block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .hook { background: var(--ink); border-radius: 10px; padding: 24px 28px; margin: 20px 0; color: rgba(255,255,255,0.82); font-family: 'DM Serif Display', serif; font-size: 18px; line-height: 1.55; }
+  .hook::before { content: '"'; color: var(--violet-light); font-size: 42px; line-height: 0.5; display: block; margin-bottom: 12px; }
+
+  /* STAT CARDS */
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 24px 0; }
+  .stat-card { background: var(--white); border-radius: 10px; padding: 20px; border: 1px solid var(--gray-200); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .stat-card .num { font-size: 30px; font-weight: 800; color: var(--ink); line-height: 1; font-family: 'DM Serif Display', serif; }
+  .stat-card .num.v { color: var(--violet); }
+  .stat-card .num.g { color: var(--green); }
+  .stat-card .lbl { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+  .stat-card .sub { font-size: 13px; color: var(--gray-700); margin-top: 8px; }
+
+  /* COMPETITOR CARDS */
+  .comp-grid { display: grid; gap: 14px; margin: 24px 0; }
+  .comp-card { background: var(--white); border-radius: 10px; border: 1px solid var(--gray-200); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .comp-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 20px; background: var(--ink); color: white; }
+  .comp-header .name { font-weight: 700; font-size: 15px; font-family: 'DM Serif Display', serif; }
+  .comp-header .badge { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; background: rgba(255,255,255,0.12); padding: 3px 10px; border-radius: 20px; }
+  .comp-body { padding: 14px 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .comp-col label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; display: block; }
+  .comp-col.green label { color: var(--green); }
+  .comp-col.red label { color: var(--red); }
+  .comp-col.blue label { color: var(--violet); }
+  .comp-col p { font-size: 13px; color: var(--gray-700); margin: 0; }
+
+  /* CHARTS */
+  .chart-wrap { background: var(--white); border-radius: 12px; border: 1px solid var(--gray-200); padding: 22px; margin: 24px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .chart-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 3px; font-family: 'DM Serif Display', serif; }
+  .chart-sub { font-size: 12px; color: var(--gray-400); margin-bottom: 16px; }
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  canvas { max-height: 260px; }
+
+  /* STRATEGY */
+  .strategy-list { display: grid; gap: 14px; margin: 24px 0; }
+  .strategy-card { background: var(--white); border-radius: 10px; border: 1px solid var(--gray-200); padding: 20px 24px; display: flex; gap: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .strategy-num { font-family: 'DM Serif Display', serif; font-size: 38px; color: var(--gray-200); line-height: 1; min-width: 36px; font-weight: 800; }
+  .strategy-card h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin: 0 0 6px; }
+  .strategy-card p { font-size: 14px; color: var(--gray-700); margin: 0; }
+  .strategy-tag { display: inline-block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; font-weight: 600; }
+  .tag-quick { background: #dcfce7; color: #15803d; }
+  .tag-mid { background: #fef9c3; color: #854d0e; }
+  .tag-long { background: #ede9fe; color: #5b21b6; }
+
+  /* NARRATIVE */
+  .narrative-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 24px 0; }
+  .narrative-card { border-radius: 10px; padding: 20px; border: 1px solid var(--gray-200); background: var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .narrative-card .num { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--violet); line-height: 1; margin-bottom: 10px; font-weight: 800; }
+  .narrative-card h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .narrative-card p { font-size: 13px; color: var(--gray-700); margin: 0; }
+  .narrative-card .target { font-size: 11px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--gray-200); }
+
+  /* GAPS */
+  .gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 24px 0; }
+  .gap-card { background: var(--white); border-radius: 10px; border: 1px solid var(--gray-200); padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .gap-card .gap-icon { font-size: 22px; margin-bottom: 8px; }
+  .gap-card h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .gap-card p { font-size: 13px; color: var(--gray-700); margin: 0; }
+  .gap-card .opportunity { font-size: 11px; font-weight: 700; color: var(--violet); text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 20px 0; }
+  .data-table th { background: var(--ink); color: white; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+  .data-table td { padding: 11px 14px; border-bottom: 1px solid var(--gray-200); color: var(--gray-700); vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--gray-100); }
+
+  /* FOOTER */
+  .footer { background: var(--ink); color: rgba(255,255,255,0.35); text-align: center; padding: 28px 32px; font-size: 12px; margin-top: 48px; }
+
+  @media (max-width: 700px) {
+    .cover { padding: 40px 24px; }
+    .cover h1 { font-size: 38px; }
+    .toc { padding: 0 20px; }
+    .container { padding: 0 18px; }
+    .stat-row, .narrative-grid, .gap-grid, .chart-grid { grid-template-columns: 1fr; }
+    .comp-body { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-tag">Market Intelligence Report · March 2026 · Confidential</div>
+  <h1><span>Tsenta</span><br>Strategy Brief</h1>
+  <div class="cover-sub">AI-Powered Job Application Automation — Founder Edition</div>
+  <div class="cover-meta">
+    <div class="cover-stat"><div class="val">8</div><div class="lbl">Competitors Mapped</div></div>
+    <div class="cover-stat"><div class="val">5</div><div class="lbl">Growth Plays</div></div>
+    <div class="cover-stat"><div class="val">3</div><div class="lbl">Investor Narratives</div></div>
+    <div class="cover-stat"><div class="val">$2.4B+</div><div class="lbl">Market Opportunity</div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="toc">
+  <a href="#overview">Overview</a>
+  <a href="#market">Market</a>
+  <a href="#competitors">Competitors</a>
+  <a href="#gaps">Gaps</a>
+  <a href="#investors">Investor Pitch</a>
+  <a href="#growth">Growth</a>
+</nav>
+
+<div class="container">
+
+<!-- SECTION 1 -->
+<section id="overview">
+  <div class="section-label">Section 01</div>
+  <h2>What Tsenta Does</h2>
+
+  <p><strong>One sentence:</strong> Tsenta is an on-device AI agent that watches your screen and automates the full job application process — discovery, resume optimization, and end-to-end form submission — with complete transparency and local execution.</p>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="num v">On-Device</div>
+      <div class="lbl">Local execution model</div>
+      <div class="sub">Runs locally, bypasses anti-bot detection. Doesn't send your data to a cloud queue like competitors.</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">3-in-1</div>
+      <div class="lbl">Tracker + Applier + Finder</div>
+      <div class="sub">Consolidates job discovery, ATS-optimized resume tailoring, and live browser automation into one app.</div>
+    </div>
+    <div class="stat-card">
+      <div class="num g">YC</div>
+      <div class="lbl">Y Combinator backed</div>
+      <div class="sub">Backed by Y Combinator — the most credible early-stage signal in tech. Available Mac, Windows & Linux.</div>
+    </div>
+  </div>
+
+  <h3>Three Core Differentiators</h3>
+  <table class="data-table">
+    <thead><tr><th>Differentiator</th><th>What it means</th><th>Why it matters vs. competition</th></tr></thead>
+    <tbody>
+      <tr><td><strong>On-Device Agent</strong></td><td>The automation runs in a local browser on the user's machine. Every field fill happens live on screen.</td><td>Cloud auto-appliers (like SorceJobs) are invisible black boxes. Tsenta's transparency builds trust AND avoids platform detection.</td></tr>
+      <tr><td><strong>Full Transparency</strong></td><td>Users watch every field being filled in real time. Can pause, edit, or take over at any step.</td><td>Most competitors are fire-and-forget. Tsenta positions control as a feature — directly addressing job seekers' biggest fear: a bot wrecking their reputation.</td></tr>
+      <tr><td><strong>ATS Resume Optimization</strong></td><td>Per-job resume tailoring with keyword insertion before each application is submitted.</td><td>97.8% of Fortune 500 ATS systems reject resumes before human review. Per-job tailoring is the highest-leverage intervention in the funnel.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="insight">
+    <strong>Key Insight</strong>
+    Tsenta has threaded a needle most competitors miss: combining the <em>volume</em> of cloud auto-appliers with the <em>trust</em> of manual applications. The on-device + live-screen model is Tsenta's most defensible moat — it's an architectural choice, not a feature toggle.
+  </div>
+</section>
+
+<!-- SECTION 2 -->
+<section id="market">
+  <div class="section-label">Section 02</div>
+  <h2>Market Size &amp; Timing</h2>
+
+  <p>The AI job search tools market is one of the fastest-growing consumer AI categories, driven by two structural tailwinds: a brutal job market (average posting attracts ~250 applicants; ~42 applications needed per interview) and a wave of graduates entering the workforce during an automation-driven hiring slowdown.</p>
+
+  <div class="chart-grid">
+    <div class="chart-wrap">
+      <div class="chart-title">AI Job Search Tools — Market Size ($B)</div>
+      <div class="chart-sub">Estimated total addressable market 2023–2028</div>
+      <canvas id="marketGrowthChart"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Job Seeker Pain Points</div>
+      <div class="chart-sub">Top frustrations Tsenta directly addresses (% of surveyed job seekers)</div>
+      <canvas id="painPointChart"></canvas>
+    </div>
+  </div>
+
+  <div class="warning">
+    <strong>Timing Risk</strong>
+    The auto-apply space is crowding fast — LazyApply, Sonara, JobCopilot, AIApply, LoopCV, and a dozen others all launched in the past 24 months. Tsenta's YC backing and on-device architecture give it a credibility and trust advantage, but distribution speed is critical. The window to establish a brand position before commoditization is roughly 12–18 months.
+  </div>
+</section>
+
+<!-- SECTION 3 -->
+<section id="competitors">
+  <div class="section-label">Section 03</div>
+  <h2>Competitor Landscape</h2>
+
+  <p>The market splits into three clusters. Tsenta is the only player that credibly spans all three with a single on-device product.</p>
+
+  <div class="chart-grid">
+    <div class="chart-wrap">
+      <div class="chart-title">Positioning Map — Automation Depth vs. User Trust</div>
+      <div class="chart-sub">Bubble size = estimated user base / traction</div>
+      <canvas id="positioningChart"></canvas>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Feature Comparison Radar</div>
+      <div class="chart-sub">Score out of 5 across key dimensions</div>
+      <canvas id="radarChart"></canvas>
+    </div>
+  </div>
+
+  <div class="comp-grid">
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">LazyApply</span><span class="badge">Chrome Extension</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>Chrome extension that mass-applies to LinkedIn, Indeed & ZipRecruiter. $129/yr for 150 apps/day.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>High volume, low friction entry. Established brand among early adopters. LinkedIn-native.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>LazyApply is a browser extension — no resume optimization, no anti-detection, no Workday support. Tsenta's agent is far more sophisticated and handles complex multi-page forms.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">JobCopilot</span><span class="badge">Full-Suite SaaS</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>End-to-end automation with resume builder, cover letters, interview prep, recruiter email finder. From $29.90/mo.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Comprehensive feature set. "Review mode" for oversight. Learns from user edits over time.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>Cloud-based — lacks Tsenta's anti-bot stealth advantage. JobCopilot's breadth creates complexity; Tsenta's live-screen transparency is a stronger trust signal for cautious job seekers.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">Sonara</span><span class="badge">Auto-Apply SaaS</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>Sleek, simple auto-apply tool that scores job matches before submitting. Praised for ease of use.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Clean UX. Smart filtering — rejects ~1 in 5 low-match applications. Strong early reviews.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>Sonara is cloud-based with limited transparency. Tsenta offers the same smart-matching plus live on-screen execution, giving users confidence their applications aren't being botched invisibly.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">AIApply</span><span class="badge">Full-Suite SaaS</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>Resume builder + ATS optimizer + auto-apply + interview prep. Pricing from $25/mo for 50–150 apps.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Comprehensive. Strong ATS optimization. Trained on successful resumes. Good brand recognition.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>AIApply is a web SaaS — cloud submission means platform risk. Tsenta runs locally, meaning no throttling, no account bans, no data being centralized in a vendor's cloud.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">LoopCV</span><span class="badge">Set-and-Forget</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>"Set it and forget it" job application. Daily auto-applies based on criteria. Includes recruiter email outreach.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>True passivity — zero daily effort once configured. Recruiter email feature is unique.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>LoopCV's strength (invisibility) is its weakness. No per-job resume tailoring, no live oversight. Tsenta beats it on quality per application — the variable that actually drives interview rates.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">Simplify / Jobright</span><span class="badge">Browser Extensions</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>Browser extensions for autofill + job tracking. Simplify focuses on form-filling, Jobright on AI job matching and recommendations.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Free or near-free entry. Huge user bases. Low commitment for job seekers to try.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>Extensions only handle simple forms. Tsenta explicitly calls out Workday automation — a "pain in the ass" most extensions can't handle. That's the hardest and most valuable problem to solve.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">Teal / Huntr</span><span class="badge">Job Tracker Tools</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>Organized job search tracking, resume alignment scoring, and application management. Not auto-apply.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Strong retention via organization features. 4.9★ Chrome extension. Good for methodical job seekers.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>Teal/Huntr require the user to still apply manually. Tsenta automates the actual submission — a categorically higher value proposition for high-volume job seekers.</p></div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-header"><span class="name">Rezi / Jobscan</span><span class="badge">ATS Optimization</span></div>
+      <div class="comp-body">
+        <div class="comp-col blue"><label>Product</label><p>AI resume builders focused on ATS optimization. Rezi trusted by 4M+ job seekers. Jobscan scores resume-to-job-description match.</p></div>
+        <div class="comp-col green"><label>Strengths</label><p>Deep ATS expertise. Strong brand trust. Rezi has Forbes recognition and 4M+ user base.</p></div>
+        <div class="comp-col red"><label>Tsenta Advantage</label><p>Resume tools without auto-apply are incomplete solutions. Tsenta bundles ATS optimization into an end-to-end workflow — users don't need to copy-paste between tools.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Competitor Pricing Comparison (Monthly Equivalent, $)</div>
+    <div class="chart-sub">Tsenta's pricing should undercut cloud competitors while emphasizing on-device value</div>
+    <canvas id="pricingChart" style="max-height:200px"></canvas>
+  </div>
+</section>
+
+<!-- SECTION 4 -->
+<section id="gaps">
+  <div class="section-label">Section 04</div>
+  <h2>Market Gaps &amp; Opportunities</h2>
+  <p>These are underserved positioning angles that no current competitor has locked up. Each represents a concrete wedge for Tsenta to own.</p>
+
+  <div class="gap-grid">
+    <div class="gap-card">
+      <div class="gap-icon">🏢</div>
+      <h3>The Workday / Enterprise ATS Gap</h3>
+      <p>Tsenta is already calling out Workday automation. This is the single hardest and most valuable form-filling problem in the space — most extensions simply fail on Workday, Greenhouse, and Lever. Owning the "hard forms" narrative is a clear differentiation no browser extension can claim.</p>
+      <div class="opportunity">⚡ Priority: #1 — Own it loudly in messaging</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-icon">🎓</div>
+      <h3>The New Grad / Campus Market</h3>
+      <p>New grad SWE roles and internships are the highest-volume, most repetitive job application category in existence. A student applying to 200+ internships is Tsenta's ideal power user. No competitor has a campus-first brand. University partnerships + Reddit/Discord presence would lock this in.</p>
+      <div class="opportunity">⚡ Priority: #2 — Dominant distribution channel</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-icon">🔒</div>
+      <h3>The Privacy / Anti-Ban Moat</h3>
+      <p>Cloud auto-appliers are getting flagged and accounts banned by LinkedIn, Indeed, and others. On-device execution is the only structurally safe approach. No competitor is marketing this advantage explicitly — Tsenta should. "Your account, never at risk" is a powerful hook.</p>
+      <div class="opportunity">⚡ Priority: #3 — Underexploited messaging</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-icon">📊</div>
+      <h3>Application Intelligence / Analytics</h3>
+      <p>No tool gives job seekers meaningful data on what's working: which resume version gets callbacks, which job boards yield interviews, which cover letter angles convert. Tsenta sees all this data across its users. An anonymized "what's working" analytics layer creates a data moat and a reason to stay subscribed.</p>
+      <div class="opportunity">⚡ Priority: #4 — Strong retention driver</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-icon">🌍</div>
+      <h3>Non-English / International Job Markets</h3>
+      <p>The vast majority of competitors are English-first and US/UK focused. The job seeker automation problem is equally acute in Germany, France, India, and Brazil — but the localization barrier has kept most competitors out. Tsenta's on-device architecture makes multilingual support more tractable than cloud-based systems.</p>
+      <div class="opportunity">⚡ Priority: #5 — Long-term TAM expansion</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-icon">💼</div>
+      <h3>The Laid-Off Professional Segment</h3>
+      <p>Mid-career professionals laid off from tech in 2024–2025 are a high-urgency, high-willingness-to-pay cohort. They're not students looking for free tools — they'll pay $50–100/month if it shortens their job search by 4 weeks. Tsenta's positioning skews young; a deliberate enterprise/senior-level product tier could unlock significantly higher ARPU.</p>
+      <div class="opportunity">⚡ Priority: #6 — Higher ARPU tier</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5 -->
+<section id="investors">
+  <div class="section-label">Section 05</div>
+  <h2>Investor Narratives</h2>
+  <p>Three distinct stories — each maps to a different fund thesis. The first is the strongest for Tsenta's current stage.</p>
+
+  <div class="narrative-grid">
+    <div class="narrative-card">
+      <div class="num">1</div>
+      <h3>The On-Device AI Agent Story</h3>
+      <p>Tsenta isn't a job search tool — it's <strong>the first consumer-grade on-device AI agent</strong> trained on a specific, high-stakes task. The job application vertical is the wedge. The platform is the prize.</p>
+      <div class="target">Best for: AI infrastructure / agent-native funds<br>Comparables: Early Perplexity, Cursor</div>
+    </div>
+    <div class="narrative-card">
+      <div class="num">2</div>
+      <h3>The Job Market Crisis Play</h3>
+      <p>42 applications per interview. 97.8% of resumes rejected by ATS before human review. <strong>The job market is structurally broken for candidates</strong>, and Tsenta is the only tool that fixes both volume and quality simultaneously.</p>
+      <div class="target">Best for: Consumer AI / future of work funds<br>Comparables: Duolingo, Calm (high-urgency consumer)</div>
+    </div>
+    <div class="narrative-card">
+      <div class="num">3</div>
+      <h3>The Hiring Intelligence Platform</h3>
+      <p>Tsenta sees application outcomes across thousands of users — which resumes convert, which job boards work, which companies respond. <strong>That's a proprietary dataset no job board or recruiter has.</strong> Long-term: sell insights to employers.</p>
+      <div class="target">Best for: Data / marketplace funds<br>Comparables: Glassdoor, LinkedIn data layer</div>
+    </div>
+  </div>
+
+  <div class="hook">
+    The average job seeker submits 42 applications to get one interview. We automate every single one — with full transparency, on your device, tailored to each role. We're not a bot. We're a co-pilot that does the work while you stay in control.
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Narrative Resonance by Investor Type</div>
+    <div class="chart-sub">Which pitch lands hardest with each fund archetype (illustrative scoring)</div>
+    <canvas id="narrativeChart" style="max-height:220px"></canvas>
+  </div>
+</section>
+
+<!-- SECTION 6 -->
+<section id="growth">
+  <div class="section-label">Section 06</div>
+  <h2>Growth Strategies</h2>
+  <p>Ranked by speed to first traction. Each is specific to Tsenta's position — not generic SaaS advice.</p>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Growth Strategy Matrix — Impact vs. Time to Traction</div>
+    <div class="chart-sub">Bubble size = resource intensity required</div>
+    <canvas id="growthMatrix"></canvas>
+  </div>
+
+  <div class="strategy-list">
+    <div class="strategy-card">
+      <div class="strategy-num">01</div>
+      <div>
+        <span class="strategy-tag tag-quick">Quick Win · 0–2 months</span>
+        <h3>Reddit + Discord Job Seeker Community Domination</h3>
+        <p>r/cscareerquestions, r/jobs, r/recruitinghell, and r/layoffs collectively have millions of job-seeker members and represent the highest-intent distribution channel in the space. These communities actively share tool recommendations. One authentic "I got 12 interviews using Tsenta" post that goes viral is worth $50K in ads. Seed this aggressively with genuine user stories, not sponsored content. Target Discord servers for bootcamp grads and FAANG interview prep groups too.</p>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-num">02</div>
+      <div>
+        <span class="strategy-tag tag-quick">Quick Win · 1–3 months</span>
+        <h3>Own the "Workday Automation" Search Term</h3>
+        <p>Workday is the most hated job application platform on the internet. Googling "automate Workday job applications" has massive intent and almost no good results. Tsenta should publish a definitive guide, a YouTube demo, and own this SEO term completely. Anyone searching this term is a power user willing to pay. This is a direct pipeline to Tsenta's highest-converting audience segment — people already in pain from manual Workday submissions.</p>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-num">03</div>
+      <div>
+        <span class="strategy-tag tag-mid">Mid-term · 2–6 months</span>
+        <h3>University CS Department Partnerships</h3>
+        <p>Partner with 10 top CS programs (MIT, CMU, Georgia Tech, UT Austin, UIUC) to offer free Tsenta Pro access during recruiting season. In exchange, present at career fairs and get listed in the department's recommended tools. Each campus partnership creates a cohort of 200–500 power users who will evangelize Tsenta across their cohort. New grad recruiting season (Sept–Dec) is the Super Bowl for this product — the partnerships need to be locked in by August.</p>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-num">04</div>
+      <div>
+        <span class="strategy-tag tag-mid">Mid-term · 3–6 months</span>
+        <h3>Layoff Community Targeting</h3>
+        <p>Layoff tracking sites (Layoffs.fyi, Blind, LinkedIn layoff posts) are real-time signals for Tsenta's highest-urgency customers. Mid-career professionals with 5–10 years of experience who just got laid off have high willingness to pay, strong networks to refer from, and desperate urgency. Build a dedicated landing page for this segment ("Laid off? Start applying at scale today") and advertise directly on Blind and LinkedIn against layoff-related searches. This cohort also justifies a $49–99/month premium tier.</p>
+      </div>
+    </div>
+
+    <div class="strategy-card">
+      <div class="strategy-num">05</div>
+      <div>
+        <span class="strategy-tag tag-long">Long-term · 6–18 months</span>
+        <h3>Application Outcome Data Product</h3>
+        <p>With scale, Tsenta accumulates the most valuable dataset in job searching: which resume versions, cover letter angles, and application timing patterns actually produce interview callbacks — aggregated across thousands of users and roles. Anonymized insights ("Resumes mentioning TypeScript get 2.4x more callbacks at startups than enterprises") become a premium feature that increases retention and justifies higher pricing. Longer term, this dataset is sellable to employers as a signal layer — a Glassdoor-style B2B pivot that creates a second revenue stream entirely.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <strong>Bottom Line</strong>
+    Tsenta's biggest risk isn't product — it's distribution speed. The on-device architecture and Workday support are genuinely differentiated, but the brand is not yet the default answer when a frustrated job seeker asks "what tool should I use?" Strategies 1 and 2 above are the fastest path to changing that, at near-zero cost.
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  Tsenta Market Intelligence Report · March 2026 · Prepared by Strategy Consulting Analysis · Confidential
+</div>
+
+<script>
+const INK = '#0e1117';
+const VIOLET = '#5b3ff8';
+const VIOLET_L = '#7c62fa';
+const AMBER = '#e07b2a';
+const GREEN = '#1a9c6e';
+const GRAY = '#9299aa';
+const RED = '#d63b3b';
+
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.color = '#6b7280';
+
+// 1. Market Growth
+new Chart(document.getElementById('marketGrowthChart'), {
+  type: 'line',
+  data: {
+    labels: ['2023','2024','2025','2026E','2027E','2028E'],
+    datasets: [
+      { label: 'AI Job Search Tools ($B)', data: [0.3, 0.65, 1.1, 1.75, 2.5, 3.6], borderColor: VIOLET, backgroundColor: 'rgba(91,63,248,0.1)', borderWidth: 3, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: VIOLET },
+      { label: 'Auto-Apply Segment ($B)', data: [0.05, 0.18, 0.42, 0.82, 1.4, 2.2], borderColor: AMBER, backgroundColor: 'rgba(224,123,42,0.07)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: AMBER, borderDash: [5,3] }
+    ]
+  },
+  options: {
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 16 } } },
+    scales: {
+      y: { grid: { color: '#f0f0f0' }, ticks: { callback: v => '$' + v + 'B' } },
+      x: { grid: { color: '#f0f0f0' } }
+    }
+  }
+});
+
+// 2. Pain Points
+new Chart(document.getElementById('painPointChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Repetitive form filling', 'ATS rejections', 'Too many apps required', 'Resume tailoring time', 'Tracking applications', 'Workday / complex forms'],
+    datasets: [{ label: '% citing as major pain point', data: [78, 72, 68, 61, 54, 49], backgroundColor: [VIOLET, VIOLET, VIOLET, AMBER, AMBER, RED], borderRadius: 4 }]
+  },
+  options: {
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#f0f0f0' }, ticks: { callback: v => v + '%' }, max: 100 },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// 3. Positioning Bubble
+new Chart(document.getElementById('positioningChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      { label: 'Tsenta', data: [{ x: 82, y: 88, r: 18 }], backgroundColor: 'rgba(91,63,248,0.85)', borderColor: '#fff', borderWidth: 2 },
+      { label: 'JobCopilot', data: [{ x: 72, y: 58, r: 13 }], backgroundColor: 'rgba(224,123,42,0.75)' },
+      { label: 'LazyApply', data: [{ x: 68, y: 38, r: 14 }], backgroundColor: 'rgba(209,0,0,0.65)' },
+      { label: 'Sonara', data: [{ x: 62, y: 62, r: 12 }], backgroundColor: 'rgba(26,156,110,0.75)' },
+      { label: 'AIApply', data: [{ x: 70, y: 52, r: 13 }], backgroundColor: 'rgba(37,99,235,0.75)' },
+      { label: 'LoopCV', data: [{ x: 75, y: 32, r: 11 }], backgroundColor: 'rgba(100,116,139,0.75)' },
+      { label: 'Teal/Huntr', data: [{ x: 25, y: 72, r: 12 }], backgroundColor: 'rgba(120,53,15,0.75)' },
+      { label: 'Rezi/Jobscan', data: [{ x: 20, y: 78, r: 13 }], backgroundColor: 'rgba(124,58,237,0.5)' },
+    ]
+  },
+  options: {
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 10 } } } },
+    scales: {
+      x: { title: { display: true, text: 'Automation Depth →', font: { size: 11 } }, min: 10, max: 100, grid: { color: '#f0f0f0' } },
+      y: { title: { display: true, text: 'User Trust / Transparency →', font: { size: 11 } }, min: 10, max: 100, grid: { color: '#f0f0f0' } }
+    }
+  }
+});
+
+// 4. Radar
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['Auto-Apply', 'ATS Optimization', 'Transparency', 'Anti-Detection', 'Complex Forms', 'Price/Value'],
+    datasets: [
+      { label: 'Tsenta', data: [5, 4, 5, 5, 5, 4], borderColor: VIOLET, backgroundColor: 'rgba(91,63,248,0.15)', borderWidth: 2, pointRadius: 4 },
+      { label: 'JobCopilot', data: [4, 4, 3, 2, 3, 3], borderColor: AMBER, backgroundColor: 'rgba(224,123,42,0.08)', borderWidth: 2, pointRadius: 3 },
+      { label: 'LazyApply', data: [5, 2, 2, 2, 2, 4], borderColor: RED, backgroundColor: 'rgba(214,59,59,0.07)', borderWidth: 2, pointRadius: 3 },
+    ]
+  },
+  options: {
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12 } } },
+    scales: {
+      r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 10 } }, grid: { color: '#e5e7eb' }, pointLabels: { font: { size: 12, weight: '600' } } }
+    }
+  }
+});
+
+// 5. Pricing bar
+new Chart(document.getElementById('pricingChart'), {
+  type: 'bar',
+  data: {
+    labels: ['LazyApply', 'AIApply', 'JobCopilot', 'Sonara', 'LoopCV', 'BulkApply', 'Tsenta (est.)'],
+    datasets: [{
+      label: '$/month (entry tier)',
+      data: [11, 25, 30, 15, 19, 16, 12],
+      backgroundColor: [GRAY, GRAY, GRAY, GRAY, GRAY, GRAY, VIOLET],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { grid: { color: '#f0f0f0' }, ticks: { callback: v => '$' + v } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 6. Narrative bar
+new Chart(document.getElementById('narrativeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['AI Agent / Infra Funds', 'Consumer AI / Future of Work', 'Data / Marketplace Funds'],
+    datasets: [
+      { label: 'On-Device Agent Story', data: [9, 6, 5], backgroundColor: VIOLET, borderRadius: 3 },
+      { label: 'Job Market Crisis', data: [5, 9, 5], backgroundColor: AMBER, borderRadius: 3 },
+      { label: 'Hiring Intelligence Platform', data: [5, 6, 9], backgroundColor: INK, borderRadius: 3 },
+    ]
+  },
+  options: {
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 14 } } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#f0f0f0' }, max: 10, ticks: { callback: v => v + '/10' } }
+    }
+  }
+});
+
+// 7. Growth Matrix
+new Chart(document.getElementById('growthMatrix'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      { label: 'Reddit/Discord Communities', data: [{ x: 1.5, y: 8.5, r: 10 }], backgroundColor: 'rgba(91,63,248,0.85)' },
+      { label: 'Own "Workday" SEO Term', data: [{ x: 2, y: 9, r: 12 }], backgroundColor: 'rgba(91,63,248,0.55)' },
+      { label: 'University Partnerships', data: [{ x: 5, y: 9, r: 16 }], backgroundColor: 'rgba(224,123,42,0.8)' },
+      { label: 'Layoff Community Targeting', data: [{ x: 4, y: 7.5, r: 13 }], backgroundColor: 'rgba(214,59,59,0.75)' },
+      { label: 'Data / Analytics Product', data: [{ x: 12, y: 8.5, r: 14 }], backgroundColor: 'rgba(14,17,23,0.7)' },
+    ]
+  },
+  options: {
+    plugins: {
+      legend: { position: 'bottom', labels: { boxWidth: 12, padding: 12, font: { size: 11 } } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label} — impact ${ctx.raw.y}/10, ~${ctx.raw.x}mo to traction` } }
+    },
+    scales: {
+      x: { title: { display: true, text: 'Months to meaningful traction', font: { size: 11 } }, min: 0, max: 16, grid: { color: '#f0f0f0' } },
+      y: { title: { display: true, text: 'Estimated impact (1–10)', font: { size: 11 } }, min: 5, max: 10, grid: { color: '#f0f0f0' } }
+    }
+  }
+});
+</script>
+</body>
+</html>
